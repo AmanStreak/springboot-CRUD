@@ -42,6 +42,9 @@ public class EmployeeService {
     }
 
     public boolean deleteEmployee(Integer id) {
+        if(!employeeRepository.existsById(id)) {
+            return false;
+        }
         employeeRepository.deleteById(id);
         return true;
     }

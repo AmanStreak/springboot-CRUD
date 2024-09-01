@@ -1,9 +1,12 @@
 package com.example.springdi.demo.controllers;
 
+import com.example.springdi.demo.DTO.ApiResponse;
 import com.example.springdi.demo.DTO.Employee;
 import com.example.springdi.demo.entities.EmployeeEntity;
 import com.example.springdi.demo.services.EmployeeService;
 import jakarta.websocket.server.PathParam;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -45,18 +48,14 @@ public class Employees {
     }
 
     @PostMapping(path = "/deleteEmployee")
-    public Map<String, Object> deleteEmployee(@PathParam("id") Integer id) {
-        Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<?> deleteEmployee(@PathParam("id") Integer id) {
         boolean success = employeeService.deleteEmployee(id);
         if(success) {
-            response.put("success", true);
-            response.put("message", "Employee Deleted Successfully");
-            return response;
+            ApiResponse<String> apiResponse = new ApiResponse<String>(HttpStatus.OK.value(), "Employee Deleted Successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
         }
-
-        response.put("success", false);
-        response.put("message", "Error! Try again");
-        return response;
+        ApiResponse<String> apiResponse = new ApiResponse<String>(HttpStatus.NOT_FOUND.value(), "Employee Not Found!");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
 
     }
 
